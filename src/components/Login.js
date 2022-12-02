@@ -11,8 +11,71 @@ import {
 }
 from 'mdb-react-ui-kit';
 import "./../styles/Login.css"
+import { currentUser } from "../data/CurrentUser";
+import { token } from "../data/Token";
 
 function Login() {
+
+  const LOGIN_API = "http://localhost:8080/account/login";
+  const usersUrl = "http://localhost:8080/account";
+
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  function handleLogin () {
+    fetch(LOGIN_API, {
+      method: "POST",
+      headers: {  
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        token = data.token;
+        console.log(data);
+        getRole();
+        showWindow();
+      }
+    );
+  }
+
+  function getRole() {
+    fetch(usersUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        data.map((user) => {
+          if (user.email === email) {
+            currentUser.id = user.id;
+            currentUser.name = user.name;
+            currentUser.email = user.email;
+            currentUser.address = user.address;
+            currentUser.password = user.password;
+            currentUser.roleId = user.role.roleId;
+            currentUser.roleName = user.role.name;
+
+          }
+        })
+      })
+  }
+
+  function showWindow() {
+    if (currentUser.roleName === "ADMIN") {
+      window.location.href = "/admin";
+    } else if (currentUser.roleName === "USER") {
+      window.location.href = "/list";
+    }
+  }
+
   return (
     <MDBContainer fluid>
 
@@ -25,11 +88,11 @@ function Login() {
               <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
               <p className="text-dark-50 mb-5">Please enter your login and password!</p>
 
-              <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-dark' label='Email address' id='formControlLg' type='email' size="lg"/>
-              <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-dark' label='Password' id='formControlLg' type='password' size="lg"/>
+              <MDBInput value={email} onChange={e => setEmail(e.target.value)} wrapperClass='mb-4 mx-5 w-100' labelClass='text-dark' label='Email address' id='formControlLg' type='email' size="lg"/>
+              <MDBInput value={password} onChange={e => setPassword(e.target.value)} wrapperClass='mb-4 mx-5 w-100' labelClass='text-dark' label='Password' id='formControlLg' type='password' size="lg"/>
 
               <p className="small mb-3 pb-lg-2"><a class="text-dark-50" href="#!">Forgot password?</a></p>
-              <MDBBtn outline className='mx-2 px-5' color='white' size='lg'>
+              <MDBBtn outline className='mx-2 px-5' color='white' size='lg' onClick={handleLogin}>
                 Login
               </MDBBtn>
 
@@ -40,7 +103,7 @@ function Login() {
               </div>
 
               <div>
-                <p className="mb-0">Don't have an account? <a href="#!" class="text-dark-50 fw-bold">Sign Up</a></p>
+                <p className="mb-0">Don't have an account? <a href="/register" class="text-dark-50 fw-bold">Sign Up</a></p>
 
               </div>
             </MDBCardBody>
