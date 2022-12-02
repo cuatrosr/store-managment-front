@@ -1,6 +1,5 @@
 import React from "react";
 import Users from "./Users";
-import Orders from "./Orders";
 import AdminItems from "./AdminItem";
 import { MDBContainer } from "mdb-react-ui-kit";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';

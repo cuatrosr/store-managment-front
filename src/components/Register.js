@@ -14,6 +14,64 @@ import {
 from 'mdb-react-ui-kit';
 
 function Register() {
+
+  const url = "http://localhost:8080/account/register";
+  const roleUrl = "http://localhost:8080/account/roles";
+
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [role, setRole] = React.useState("");
+
+  const registerRole = 'USER'
+
+  function handleClick () {
+    if (password === passwordConfirmation) {
+      
+      fetch(roleUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          },
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            data.map((role) => {
+              if (role.name === registerRole) {
+                setRole(role.id)
+              }
+            })
+          })
+
+
+
+      const user = {
+        name: name,
+        email: email,
+        password: password,
+        address: address,
+        role: role
+      };
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        }
+      );
+    } else {
+      alert("Passwords do not match!");
+    }
+  }
+
   return (
     <MDBContainer>
       <MDBCard className='text-black m-5' style={{borderRadius: '25px'}}>
@@ -27,34 +85,34 @@ function Register() {
               
               <div className="d-flex flex-row  align-items-center mb-4">
                 <MDBIcon fas icon="user me-3" size='lg'/>
-                <MDBInput label='Your Name' id='form1' type='text' required/>
+                <MDBInput label='Your Name' id='form1' type='text' value={name} onChange={e => setName(e.target.value)}/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="envelope me-3" size='lg'/>
-                <MDBInput label='Your Email' id='form2' type='email'/>
+                <MDBInput label='Your Email' id='form2' type='email' value={email} onChange={e => setEmail(e.target.value)}/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="lock me-3" size='lg'/>
-                <MDBInput label='Password' id='form3' type='password'/>
+                <MDBInput label='Password' id='form3' type='password' value={password} onChange={e => setPassword(e.target.value)}/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
                 <MDBIcon fas icon="key me-3" size='lg'/>
-                <MDBInput label='Repeat your password' id='form4' type='password'/>
+                <MDBInput label='Repeat your password' id='form4' type='password' value={passwordConfirmation} onChange={e => setPasswordConfirmation(e.target.value)}/>
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="key me-3" size='lg'/>
-                <MDBInput label='Address' id='form5' type='text'/>
+                <MDBIcon fas icon="map-marked-alt" className='me-3' size='lg'/>
+                <MDBInput label='Address' id='form5' type='text' value={address} onChange={e => setAddress(e.target.value)}/>
               </div>
 
               <div className='mb-4'>
                 <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Subscribe to our newsletter' />
               </div>
 
-              <MDBBtn href='/' className='mb-4' size='lg'>Register</MDBBtn>
+              <MDBBtn href='/' className='mb-4' size='lg' onClick={handleClick}>Register</MDBBtn>
 
             </MDBCol>
 

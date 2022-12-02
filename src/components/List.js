@@ -22,12 +22,14 @@ function List() {
 
   return (
     <MDBContainer fluid>
+              
       {
         items && items.length > 0 && items.map((item) => {
           return <Item 
+                  id={item.id}
                   name={item.name} 
                   description={item.description} 
-                  price={item}
+                  price={item.price}
                   />
         })
       }

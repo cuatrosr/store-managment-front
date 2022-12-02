@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import Register from './components/Register';
 import List from './components/List';
 import Cart from './components/Cart';
+import AdminDashboard from './components/AdminDashboard';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -21,6 +22,7 @@ root.render(
         <Route path='register' element={<Register/>} />
         <Route path='list' element={<List/>} />
         <Route path='cart' element={<Cart/>} />
+        <Route path='admin/*' element={<AdminDashboard/>} />
       </Routes>
     </Router>
   </React.StrictMode>
